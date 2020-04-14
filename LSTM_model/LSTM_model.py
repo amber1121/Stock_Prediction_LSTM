@@ -57,21 +57,31 @@ if __name__ == "__main__":
     # current path:C:\Users\Lab1424\Desktop\Stock_Prediction_LSTM\LSTM_model 
     os.chdir('C:\\Users\\Lab1424\\Desktop\\Stock_Prediction_LSTM')
     os.getcwd()
-    process = read_file("./format_csv_file_sp500/FB.csv", 0.8)
-    x_train,y_train,x_test,y_test = split_datasets(process,TIME_STEP, INPUT_DIM)
-    print(x_train.shape)
-    print(y_train.shape)
-    # save file 
-    # save_x_train = x_train[:245]
-    # save_y_train = y_train[:245]
-    # np.save('FB_x_train_LSTMmodel', save_x_train)
-    # np.save('FB_y_train_LSTMmodel', save_y_train)
-    model = create_model(TIME_STEP, INPUT_DIM)
-    y_train = np_utils.to_categorical(y_train, num_classes=3)
-    y_test = np_utils.to_categorical(y_test, num_classes = 3) 
-    # op=[EarlyStopping(monitor='val_loss',min_delta=0.0001,mode='min',verbose=2,patience=200)]   
-    history = model.fit(x_train, y_train,epochs=10, validation_split=0.1)
-    loss, accuracy = model.evaluate(x_test, y_test)
-    print("test loss: {}".format(loss))
-    print('test accuracy: {}'.format(accuracy))
+    file_path = "./format_csv_file_sp500/"
+    count = 0
+    sum_accuracy = []
+    for company in os.listdir(file_path):
+        process = read_file(file_path + company, 0.8)
+        x_train,y_train,x_test,y_test = split_datasets(process,TIME_STEP, INPUT_DIM)
+        if len(x_train) != 428 or len(y_train)!= 428 or len(x_test) != 98 or len(y_test)!=98:
+            continue
+        # company_name = company[:-4] 
+        # np.save('./LSTM_model/x_train/'+ company_name + '_x_train', x_train)
+        # np.save('./LSTM_model/y_train/' + company_name + '_y_train', y_train)
+        # np.save('./LSTM_model/x_test/' + company_name + '_x_test', x_test)
+        # np.save('./LSTM_model/y_test/' + company_name + '_y_test', y_test)
+        model = create_model(TIME_STEP, INPUT_DIM)
+        y_train = np_utils.to_categorical(y_train, num_classes=3)
+        y_test = np_utils.to_categorical(y_test, num_classes = 3) 
+        # op=[EarlyStopping(monitor='val_loss',min_delta=0.0001,mode='min',verbose=2,patience=200)]   
+        history = model.fit(x_train, y_train,epochs=10)
+        loss, accuracy = model.evaluate(x_test, y_test)
+        count += 1
+        sum_accuracy.append(accuracy)
+        # print("test loss: {}".format(loss))
+        print('test accuracy: {}'.format(accuracy))
+    
+    total_accuracy = sum(sum_accuracy)
+    print('total size: ',count)
+    print('Average accuray: ', total_accuracy/count)
     
