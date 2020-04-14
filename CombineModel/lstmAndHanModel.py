@@ -39,7 +39,7 @@ class LSTMAndHanModel:
         self.keras_model.fit([han_train_x, lstm_train_x], 
                             train_y, 
                             epochs=self.epochs, 
-                            batch_size=self.batch_size, validation_split=0.1)
+                            batch_size=self.batch_size)
 
     def predict(self, han_x, lstm_x):
         return self.keras_model.predict([han_x, lstm_x])

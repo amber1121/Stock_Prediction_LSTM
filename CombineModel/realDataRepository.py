@@ -5,12 +5,19 @@ class RealDataRepository:
     def __init__(self):
         pass
 
-    def getData(self):
-        han_train_data = np.load('./data/han_x_train/FB_x_train.npy')
-        lstm_train_data = np.load('./data/lstm_x_train/FB_x_train_LSTMmodel.npy')
-        han_y_train_data = np.load('./data/lstm_y_train/FB_y_train_LSTMmodel.npy')
-        han_y_train_data = self.one_hot_encoding(han_y_train_data)
-        return han_train_data, lstm_train_data, han_y_train_data
+    def get_train_data(self, pathObject):
+        han_x_train = np.load(pathObject.get_han_x_train())
+        lstm_x_train_data = np.load(pathObject.get_lstm_x_train())
+        lstm_y_train_data = np.load(pathObject.get_lstm_y_train())
+        lstm_y_train_data = self.one_hot_encoding(lstm_y_train_data)
+        return han_x_train, lstm_x_train_data, lstm_y_train_data
+
+    def get_test_data(self, pathObject):
+        han_x_test = np.load(pathObject.get_han_x_test())
+        lstm_x_test_data = np.load(pathObject.get_lstm_x_test())
+        lstm_y_test_data = np.load(pathObject.get_lstm_y_test())
+        lstm_y_test_data = self.one_hot_encoding(lstm_y_test_data)
+        return han_x_test, lstm_x_test_data, lstm_y_test_data
 
     def one_hot_encoding(self, train_y):
         return np_utils.to_categorical(train_y, num_classes = 3) 
